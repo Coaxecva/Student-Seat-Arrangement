@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <link rel="shortcut icon" type="image/x-icon" href="https://www.memphis.edu/favicon.ico">
+   <link rel="apple-touch-icon" sizes="57x57" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-57x57.png">
+   <link rel="apple-touch-icon" sizes="60x60" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-60x60.png">
+   <link rel="apple-touch-icon" sizes="72x72" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-72x72.png">
+   <link rel="apple-touch-icon" sizes="76x76" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-76x76.png">
+   <link rel="apple-touch-icon" sizes="114x114" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-114x114.png">
+   <link rel="apple-touch-icon" sizes="120x120" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-120x120.png">
+   <link rel="apple-touch-icon" sizes="144x144" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-144x144.png">
+   <link rel="apple-touch-icon" sizes="152x152" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-152x152.png">
+   <link rel="apple-touch-icon" sizes="180x180" href="https://www.memphis.edu/_uofm_resources/favicons/apple-touch-icon-180x180.png">
+   <link rel="icon" type="image/png" href="https://www.memphis.edu/_uofm_resources/favicons/favicon-32x32.png" sizes="32x32">
+   <link rel="icon" type="image/png" href="https://www.memphis.edu/_uofm_resources/favicons/favicon-194x194.png" sizes="194x194">
+   <link rel="icon" type="image/png" href="https://www.memphis.edu/_uofm_resources/favicons/favicon-96x96.png" sizes="96x96">
+   <link rel="icon" type="image/png" href="https://www.memphis.edu/_uofm_resources/favicons/android-chrome-192x192.png" sizes="192x192">
+   <link rel="icon" type="image/png" href="https://www.memphis.edu/_uofm_resources/favicons/favicon-16x16.png" sizes="16x16">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>UoM Arrange Seats</title>
+<style type="text/css">
+body{
+	background-color:#f0f8ff;		
+}
+h1 {
+	color: #6495ed;
+}
+h2 {
+	color: #6495ed;
+}
+h3 {
+	color: #6495ed;
+}
+textarea{
+	background-color:#f0ffff;
+}
+/*table {
+    border-collapse: collapse;
+    border: 1px solid black;
+}*/
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+th{
+	padding: 10px;
+	text-align: center;
+}
+td{
+	padding: 10px;
+	text-align: center;
+}
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#right_corner_logo {
+    position: relative;
+}
+#right_corner_logo img {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.header--logo img { margin-top: 10px; max-width: 65%; width: auto; }
+</style>
+
+
+<script>
+var arr_name = [];
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function ShowResult(){
+	var col = document.getElementById("col").value;
+	var row = document.getElementById("row").value;
+	
+	
+	if (arr_name.length>0)
+	{
+		if (arr_name.length > (col*row))
+			document.getElementById("r1").innerHTML = "There is not enough seats for student.";
+		else {
+			for (i=arr_name.length;i<col*row;i++)
+				arr_name[i] = "";
+		
+			arr_name = shuffle(arr_name);
+			
+			var content = "<table border='1'><tr><th></th>";		
+			
+			console.log(arr_name.length + " " + col + " " +row);
+			
+			for (j=0;j<col;j++)
+				content += "<th>" + (j+1) + "</th>";
+			content += "</tr>";	
+			
+			var m=0;
+			for (i=0;i<row;i++)
+			{
+				content += "<tr><td><b>" + (i+1) + "</b></td>";	
+				for (j=0;j<col;j++)
+				{
+					m++;
+					if (arr_name[m]!=null)
+						content += "<td>" + arr_name[m] + "</td>";	
+					else content += "<td></td>";	
+				}
+				content += "</tr>";	
+			}
+			content += "</table>";
+			document.getElementById("r1").innerHTML = content;
+		}
+	}
+	else document.getElementById("r1").innerHTML = "Please input file.";
+}
+</script>
+</head>
+
+<body>
+
+<div id="right_corner_logo">
+<img src="https://www.memphis.edu/_uofm_resources/img/logo.png" class="header--logo" alt="The University of Memphis"/>
+</div>
+
+<h1 class="h1">Seat Arrangement</h1>
+<p>Arrange Seats randomly for students</p>
+
+<input type='file' accept='text/plain' onchange='openFile(event)'><br>
+<p>Number of students: <span id="total_students"></span></p>
+<textarea rows="4" cols="50" id="student_list"></textarea> 
+<script>
+  var openFile = function(event) {
+    var input = event.target;
+	
+    var reader = new FileReader();
+    reader.onload = function(){
+      var text = reader.result;
+	  document.getElementById("student_list").value = text;
+      arr_name = text.split("\n");
+      arr_name = arr_name.filter(function(entry) { return entry.trim() != ''; });
+      document.getElementById("total_students").innerHTML = arr_name.length;
+	  for(i in arr_name) {
+		console.log(arr_name[i]);
+		}
+		
+    };
+    reader.readAsText(input.files[0]);
+  };
+</script>
+<p>
+Row:	<input type="text" name="row" id="row">		Col:	<input type="text" name="col" id="col">	<button type="button" id="btnGo" onclick="ShowResult()">Go</button>
+</p>
+<div id="r1">
+	
+</div>
+
+</body>
+</html>
